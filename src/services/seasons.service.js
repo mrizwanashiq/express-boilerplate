@@ -2,8 +2,12 @@ import { EpisodeModal, SeasonModal, SeriesModel } from '../models/index.js'
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 
 export const SeasonsService = {
-  getAll: async () => {
-    return SeasonModal.find()
+  getAll: async queryObject => {
+    return SeasonModal.find(queryObject.filter)
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
   },
 
   getById: async id => {
@@ -34,15 +38,22 @@ export const SeasonsService = {
     return returnObjectOrError(season)
   },
 
-  getEpisodesBySeason: async seasonId => {
+  getEpisodesBySeason: async (seasonId, queryObject) => {
     const season = await SeasonModal.findById(seasonId)
     if (!season) throw ErrorCodesMeta.NOT_FOUND
-    const episodes = await EpisodeModal.find({ season_id: season.id })
+    const episodes = await EpisodeModal.find({
+      season_id: season.id,
+      ...queryObject.filter
+    })
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
 
     return episodes
   }
 }
-function  returnObjectOrError (obj) {
+function returnObjectOrError (obj) {
   if (obj) {
     return obj
   } else {

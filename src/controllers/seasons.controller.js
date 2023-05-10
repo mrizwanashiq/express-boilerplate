@@ -1,11 +1,15 @@
 import { ErrorCodesMeta } from '../constants/error-codes.js'
+import { EpisodeModal } from '../models/episode.js'
+import { SeasonModal } from '../models/season.js'
 import { SeasonsService } from '../services/index.js'
 import { httpResponse } from '../utils/index.js'
+import { generateQueryObject } from '../constants/functions.js'
 
 export const SeasonsController = {
   getAll: async (req, res) => {
     try {
-      const data = await SeasonsService.getAll()
+      const queryObject = generateQueryObject(SeasonModal, req.query)
+      const data = await SeasonsService.getAll(queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
@@ -49,7 +53,8 @@ export const SeasonsController = {
 
   getEpisodesBySeason: async function (req, res) {
     try {
-      const data = await SeasonsService.getEpisodesBySeason(req.params.id)
+      const queryObject = generateQueryObject(EpisodeModal, req.query)
+      const data = await SeasonsService.getEpisodesBySeason(req.params.id, queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)

@@ -7,8 +7,12 @@ import {
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 
 export const GenreService = {
-  getAll: async () => {
-    return GenreModal.find()
+  getAll: async queryObject => {
+    return GenreModal.find(queryObject.filter)
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
   },
 
   getById: async id => {
@@ -38,7 +42,11 @@ export const GenreService = {
   getSeriesByGenre: async genreId => {
     const genre = await GenreModal.findById(genreId)
     if (!genre) throw ErrorCodesMeta.NOT_FOUND
-    return await SeriesModel.find({ genre_id: genreId })
+    return await SeriesModel.find({ genre_id: genreId, ...queryObject.filter })
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
   },
 
   getSeasonsByGenre: async genreId => {
@@ -47,7 +55,14 @@ export const GenreService = {
     if (!genre) throw ErrorCodesMeta.NOT_FOUND
     const series = await SeriesModel.find({ genre_id: genre.id })
     for (const item of series) {
-      const season = await SeasonModal.find({ series_id: item.id })
+      const season = await SeasonModal.find({
+        series_id: item.id,
+        ...queryObject.filter
+      })
+        .sort(queryObject.sort)
+        .skip(queryObject.skip)
+        .limit(queryObject.limit)
+        .exec()
       season.forEach(s => seasons.push(s))
     }
     return seasons

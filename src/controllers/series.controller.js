@@ -1,11 +1,16 @@
 import { ErrorCodesMeta } from '../constants/error-codes.js'
+import { EpisodeModal } from '../models/episode.js'
+import { SeasonModal } from '../models/season.js'
+import { SeriesModel } from '../models/series.js'
 import { SeriesService } from '../services/index.js'
 import { httpResponse } from '../utils/index.js'
+import { generateQueryObject } from '../constants/functions.js'
 
 export const SeriesController = {
   getAll: async (req, res) => {
     try {
-      const data = await SeriesService.getAll()
+      const queryObject = generateQueryObject(SeriesModel, req.query)
+      const data = await SeriesService.getAll(queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
@@ -48,7 +53,8 @@ export const SeriesController = {
   },
   getSeasonsBySeries: async function (req, res) {
     try {
-      const data = await SeriesService.getSeasonsBySeries(req.params.id)
+      const queryObject = generateQueryObject(SeasonModal, req.query)
+      const data = await SeriesService.getSeasonsBySeries(req.params.id, queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
@@ -57,7 +63,8 @@ export const SeriesController = {
 
   getEpisodesBySeries: async function (req, res) {
     try {
-      const data = await SeriesService.getEpisodesBySeries(req.params.id)
+      const queryObject = generateQueryObject(EpisodeModal, req.query)
+      const data = await SeriesService.getEpisodesBySeries(req.params.id, queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)

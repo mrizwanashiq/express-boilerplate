@@ -1,11 +1,15 @@
 import { ErrorCodesMeta } from '../constants/error-codes.js'
+import { EpisodeModal } from '../models/episode.js'
+import { StreamModel } from '../models/stream.js'
 import { EpisodesService } from '../services/index.js'
 import { httpResponse } from '../utils/index.js'
+import { generateQueryObject } from '../constants/functions.js'
 
 export const EpisodeController = {
   getAll: async (req, res) => {
     try {
-      const data = await EpisodesService.getAll()
+      const queryObject = generateQueryObject(EpisodeModal, req.query)
+      const data = await EpisodesService.getAll(queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
@@ -49,7 +53,8 @@ export const EpisodeController = {
 
   getStreamsByEpisode: async function (req, res) {
     try {
-      const data = await EpisodesService.getStreamsByEpisode(req.params.id)
+      const queryObject = generateQueryObject(StreamModel, req.query)
+      const data = await EpisodesService.getStreamsByEpisode(req.params.id, queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)

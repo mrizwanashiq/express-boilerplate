@@ -4,8 +4,12 @@ import Jwt from 'jsonwebtoken'
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 
 export const UserService = {
-  getAll: async () => {
-    return UserModel.find()
+  getAll: async queryObject => {
+    return UserModel.find(queryObject.filter)
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
   },
 
   getById: async id => {
@@ -56,10 +60,15 @@ export const UserService = {
     return returnObjectOrError(user)
   },
 
-  getAllStreams: async userId => {
+  getAllStreams: async (userId, queryObject) => {
     const user = await UserModel.findById(userId)
     if (!user) throw ErrorCodesMeta.USER_NOT_EXISTS_WITH_THIS_EMAIL
-    return await StreamModel.find({ user_id: userId })
+    queryObject.filter.user_id = userId
+    return await StreamModel.find(queryObject.filter)
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
   },
 
   getStream: async (userId, streamId) => {

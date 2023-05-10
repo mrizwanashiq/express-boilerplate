@@ -9,8 +9,12 @@ import {
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 
 export const StreamsService = {
-  getAll: async () => {
-    return StreamModel.find()
+  getAll: async (queryObject) => {
+    return StreamModel.find(queryObject.filter)
+    .sort(queryObject.sort)
+    .skip(queryObject.skip)
+    .limit(queryObject.limit)
+    .exec()
   },
 
   getById: async id => {

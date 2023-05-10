@@ -1,13 +1,19 @@
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 import { UserService } from '../services/index.js'
 import { httpResponse } from '../utils/index.js'
+import { generateQueryObject } from '../constants/functions.js'
+import { UserModel } from '../models/user.js'
+import { StreamModel } from '../models/stream.js'
 
 export const UserController = {
   getAll: async (req, res) => {
     try {
-      const data = await UserService.getAll()
+      const queryObject = generateQueryObject(UserModel, req.query)
+      console.log(queryObject)
+      const data = await UserService.getAll(queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
+      console.log(error)
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
     }
   },
@@ -56,7 +62,8 @@ export const UserController = {
   },
   getAllStreams: async function (req, res) {
     try {
-      const data = await UserService.getAllStreams(req.params.id)
+      const queryObject = generateQueryObject(StreamModel, req.query)
+      const data = await UserService.getAllStreams(req.params.id, queryObject)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)

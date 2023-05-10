@@ -2,8 +2,12 @@ import { SeasonModal, EpisodeModal, StreamModel } from '../models/index.js'
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 
 export const EpisodesService = {
-  getAll: async () => {
-    return EpisodeModal.find()
+  getAll: async queryObject => {
+    return EpisodeModal.find(queryObject.filter)
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
   },
 
   getById: async id => {
@@ -33,15 +37,22 @@ export const EpisodesService = {
     return returnObjectOrError(episode)
   },
 
-  getStreamsByEpisode: async episodeId => {
+  getStreamsByEpisode: async (episodeId, queryObject) => {
     const episode = await EpisodeModal.findById(episodeId)
     if (!episode) throw ErrorCodesMeta.NOT_FOUND
-    const streams = await StreamModel.find({ episode_id: episode.id })
+    const streams = await StreamModel.find({
+      episode_id: episode.id,
+      ...queryObject.filter
+    })
+      .sort(queryObject.sort)
+      .skip(queryObject.skip)
+      .limit(queryObject.limit)
+      .exec()
 
     return streams
   }
 }
-function  returnObjectOrError (obj) {
+function returnObjectOrError (obj) {
   if (!obj) {
     throw ErrorCodesMeta.NOT_FOUND
   } else {
