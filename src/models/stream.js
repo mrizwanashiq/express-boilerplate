@@ -3,7 +3,7 @@ const schema = mongoose.Schema(
   {
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     episode_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Episode' },
-    time: { type: String, required: true, maxlength: 50 }
+    time: { type: Number, required: true, maxlength: 50 }
   },
   { timestamps: true }
 )

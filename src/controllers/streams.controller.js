@@ -7,8 +7,9 @@ import { generateQueryObject } from '../constants/functions.js'
 export const StreamController = {
   getAll: async (req, res) => {
     try {
-      const queryObject = generateQueryObject(StreamModel, req.query)
-      const data = await StreamsService.getAll(queryObject)
+      // const queryObject = generateQueryObject(StreamModel, req.query)
+      // const data = await StreamsService.getAll(queryObject)
+      const data = await StreamsService.getAll(req.query)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)

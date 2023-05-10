@@ -8,9 +8,9 @@ import { StreamModel } from '../models/stream.js'
 export const UserController = {
   getAll: async (req, res) => {
     try {
-      const queryObject = generateQueryObject(UserModel, req.query)
-      console.log(queryObject)
-      const data = await UserService.getAll(queryObject)
+      // const queryObject = generateQueryObject(UserModel, req.query)
+      // const data = await UserService.getAll(queryObject)
+      const data = await UserService.getAll(req.query)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       console.log(error)
@@ -62,8 +62,9 @@ export const UserController = {
   },
   getAllStreams: async function (req, res) {
     try {
-      const queryObject = generateQueryObject(StreamModel, req.query)
-      const data = await UserService.getAllStreams(req.params.id, queryObject)
+      // const queryObject = generateQueryObject(StreamModel, req.query)
+      // const data = await UserService.getAllStreams(req.params.id, queryObject)
+      const data = await UserService.getAllStreams(req.params.id, req.query)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)

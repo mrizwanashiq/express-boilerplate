@@ -10,7 +10,7 @@ export const StreamsValidationSchema = {
   },
   stream: {
     body: Joi.object().keys({
-      time: Joi.string().required().min(3).max(50),
+      time: Joi.number().required(),
       user_id: Joi.string()
         .regex(/^[0-9a-fA-F]{24}$/)
         .required(),

@@ -9,12 +9,87 @@ import {
 import { ErrorCodesMeta } from '../constants/error-codes.js'
 
 export const StreamsService = {
-  getAll: async (queryObject) => {
-    return StreamModel.find(queryObject.filter)
-    .sort(queryObject.sort)
-    .skip(queryObject.skip)
-    .limit(queryObject.limit)
-    .exec()
+  getAll: async queryObject => {
+    const pipeline = []
+    const page = queryObject.page || 1
+    const limit = queryObject.limit || 10
+    pipeline.push({
+      $limit: limit
+    })
+    pipeline.push({
+      $skip: (page - 1) * limit
+    })
+    if (queryObject.time) {
+      console.log(queryObject.time)
+      if (typeof queryObject.time === 'object') {
+        if (queryObject.time.gt) {
+          pipeline.push({
+            $match: {
+              time: { $gt: parseInt(queryObject.time.gt) }
+            }
+          })
+        }
+        if (queryObject.time.lt) {
+          pipeline.push({
+            $match: {
+              time: { $lt: parseInt(queryObject.time.lt) }
+            }
+          })
+        }
+        if (queryObject.time.gte) {
+          pipeline.push({
+            $match: {
+              time: { $gte: parseInt(queryObject.time.gte) }
+            }
+          })
+        }
+        if (queryObject.time.lte) {
+          pipeline.push({
+            $match: {
+              time: { $lte: parseInt(queryObject.time.lte) }
+            }
+          })
+        }
+      } else {
+        pipeline.push({
+          $match: { time: parseInt(queryObject.time) }
+        })
+      }
+    }
+    if (queryObject.sort) {
+      const sort = {}
+      if (Array.isArray(queryObject.sort)) {
+        queryObject.sort.forEach(sortOption => {
+          const sortOrder = sortOption.startsWith('-') ? -1 : 1
+          const sortField = sortOption.replace(/^-/, '')
+
+          sort[sortField] = sortOrder
+        })
+        pipeline.push({
+          $sort: sort
+        })
+      } else {
+        const sortOrder = queryObject.sort.startsWith('-') ? -1 : 1
+        const sortField = queryObject.sort.replace(/^-/, '')
+        sort[sortField] = sortOrder
+        pipeline.push({ $sort: sort })
+      }
+    }
+    if (queryObject.s) {
+      pipeline.push({
+        $match: { time: parseInt(queryObject.s) }
+      })
+    } 
+    if (pipeline.length > 0) {
+      return StreamModel.aggregate(pipeline).exec()
+    } else {
+      return StreamModel.find()
+    }
+    // return StreamModel.find(queryObject.filter)
+    // .sort(queryObject.sort)
+    // .skip(queryObject.skip)
+    // .limit(queryObject.limit)
+    // .exec()
   },
 
   getById: async id => {

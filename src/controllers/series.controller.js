@@ -9,8 +9,9 @@ import { generateQueryObject } from '../constants/functions.js'
 export const SeriesController = {
   getAll: async (req, res) => {
     try {
-      const queryObject = generateQueryObject(SeriesModel, req.query)
-      const data = await SeriesService.getAll(queryObject)
+      // const queryObject = generateQueryObject(SeriesModel, req.query)
+      // const data = await SeriesService.getAll(queryObject)
+      const data = await SeriesService.getAll(req.query)
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
@@ -53,8 +54,15 @@ export const SeriesController = {
   },
   getSeasonsBySeries: async function (req, res) {
     try {
-      const queryObject = generateQueryObject(SeasonModal, req.query)
-      const data = await SeriesService.getSeasonsBySeries(req.params.id, queryObject)
+      // const queryObject = generateQueryObject(SeasonModal, req.query)
+      // const data = await SeriesService.getSeasonsBySeries(
+      //   req.params.id,
+      //   queryObject
+      // )
+      const data = await SeriesService.getSeasonsBySeries(
+        req.params.id,
+        req.query
+      )
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
@@ -63,8 +71,16 @@ export const SeriesController = {
 
   getEpisodesBySeries: async function (req, res) {
     try {
-      const queryObject = generateQueryObject(EpisodeModal, req.query)
-      const data = await SeriesService.getEpisodesBySeries(req.params.id, queryObject)
+      // const queryObject = generateQueryObject(EpisodeModal, req.query)
+      // const data = await SeriesService.getEpisodesBySeries(
+      //   req.params.id,
+      //   queryObject
+      // )
+
+      const data = await SeriesService.getEpisodesBySeries(
+        req.params.id,
+        req.query
+      )
       return httpResponse.SUCCESS(res, data)
     } catch (error) {
       return httpResponse.INTERNAL_SERVER_ERROR(res, {}, error.message)
