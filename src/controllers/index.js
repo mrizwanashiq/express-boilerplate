@@ -1,1 +1,6 @@
-export * from "./user.controller.js";
+export * from './user.controller.js'
+export * from './genre.controller.js'
+export * from './series.controller.js'
+export * from './seasons.controller.js'
+export * from './episodes.controller.js'
+export * from './streams.controller.js'

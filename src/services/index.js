@@ -1,1 +1,6 @@
-export * from "./user.service.js";
+export * from './user.service.js'
+export * from './genre.service.js'
+export * from './series.service.js'
+export * from './seasons.service.js'
+export * from './episodes.service.js' 
+export * from './streams.service.js'
